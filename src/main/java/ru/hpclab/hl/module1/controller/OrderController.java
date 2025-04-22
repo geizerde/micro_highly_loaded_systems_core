@@ -3,7 +3,6 @@ package ru.hpclab.hl.module1.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.hpclab.hl.module1.dto.OrderDTO;
 import ru.hpclab.hl.module1.model.order.Order;
-import ru.hpclab.hl.module1.model.order.OrderCustomerPrice;
 import ru.hpclab.hl.module1.service.OrderService;
 
 import java.util.List;
@@ -45,10 +44,5 @@ public class OrderController {
     @DeleteMapping("/clear")
     public void clear() {
         service.clear();
-    }
-
-    @GetMapping("/total-orders-prices")
-    public List<OrderCustomerPrice> calculateTotalPrice() {
-        return service.getTotalOrdersPrices();
     }
 }
