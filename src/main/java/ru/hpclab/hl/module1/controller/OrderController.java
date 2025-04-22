@@ -3,9 +3,9 @@ package ru.hpclab.hl.module1.controller;
 import org.springframework.web.bind.annotation.*;
 import ru.hpclab.hl.module1.dto.OrderDTO;
 import ru.hpclab.hl.module1.model.order.Order;
+import ru.hpclab.hl.module1.model.order.OrderCustomerPrice;
 import ru.hpclab.hl.module1.service.OrderService;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -47,8 +47,8 @@ public class OrderController {
         service.clear();
     }
 
-    @GetMapping("/{id}/total-price")
-    public BigDecimal calculateTotalPrice(@PathVariable Long id) {
-        return service.calculateTotalPrice(id);
+    @GetMapping("/total-orders-prices")
+    public List<OrderCustomerPrice> calculateTotalPrice() {
+        return service.getTotalOrdersPrices();
     }
 }

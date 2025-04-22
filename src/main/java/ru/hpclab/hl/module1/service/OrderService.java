@@ -7,10 +7,11 @@ import ru.hpclab.hl.module1.dto.OrderDTO;
 import ru.hpclab.hl.module1.entity.postgresql.OrderEntity;
 import ru.hpclab.hl.module1.entity.postgresql.OrderItemEntity;
 import ru.hpclab.hl.module1.model.order.Order;
+import ru.hpclab.hl.module1.model.order.OrderCustomerPrice;
 import ru.hpclab.hl.module1.repository.postgresql.jpa.OrderRepositoryJpa;
 import ru.hpclab.hl.module1.repository.postgresql.mapper.OrderMapper;
+import ru.hpclab.hl.module1.repository.webapi.WebApiOrderRepository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class OrderService extends AbstractService {
+    private final WebApiOrderRepository webApiOrderRepository;
     private final OrderRepositoryJpa repository;
     private final OrderMapper orderMapper;
 
@@ -72,8 +74,8 @@ public class OrderService extends AbstractService {
         repository.deleteAll();
     }
 
-    public BigDecimal calculateTotalPrice(Long orderId) {
-        return repository.calculateTotalPrice(orderId);
+    public List<OrderCustomerPrice> getTotalOrdersPrices() {
+        return webApiOrderRepository.findAll();
     }
 }
 
