@@ -1,0 +1,67 @@
+services:
+  database:
+    image: postgres:16.1-alpine3.18
+    container_name: pg-docker
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-module1}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_NAME:-module1}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  app:
+    image: geizerde/highly_loaded_systems_lab1:v1.2.0
+    container_name: spring-boot-app
+    restart: always
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: ${CPUS_LIMIT:-1}
+          memory: ${MEMORY_LIMIT:-500M}
+    environment:
+      DDL_AUTO: ${DDL_AUTO:-validate}
+      SHOW_SQL: ${SHOW_SQL:-true}
+      FLYWAY_ENABLED: ${FLYWAY_ENABLED:-true}
+      FLYWAY_BASELINE: ${FLYWAY_BASELINE:-true}
+      DB_HOST: ${DB_HOST:-database}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-module1}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_DIALECT: ${DB_DIALECT:-org.hibernate.dialect.PostgreSQLDialect}
+      TOMCAT_THREADS: ${TOMCAT_THREADS:-200}
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - app-network
+    depends_on:
+      database:
+        condition: service_healthy
+
+networks:
+  app-network:
+    driver: bridge
