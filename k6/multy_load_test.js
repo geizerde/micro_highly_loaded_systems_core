@@ -1,6 +1,6 @@
 import http from 'k6/http';
 import { check } from 'k6';
-import { randomItem, randomString } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
+import { randomString } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
 
 export const options = {
     scenarios: {
@@ -19,19 +19,6 @@ export const options = {
     },
 };
 
-export function setup() {
-    const res = http.get('http://localhost:8080/orders');
-    let orderIds = [];
-
-    try {
-        orderIds = res.json().map(o => o.id);
-    } catch (err) {
-        console.error('Ошибка разбора /orders:', err);
-    }
-
-    return { orderIds };
-}
-
 function generateProductPayload() {
     return JSON.stringify({
         name: randomString(8),
@@ -41,17 +28,14 @@ function generateProductPayload() {
     });
 }
 
-export function writeScenario(data) {
+export function writeScenario() {
     const payload = generateProductPayload();
     const headers = { 'Content-Type': 'application/json' };
-    const res = http.post('http://localhost:8080/products', payload, { headers });
+    const res = http.post('http://hl1.zil:8080/products', payload, { headers });
     check(res, { 'created product': r => r.status === 200 || r.status === 201 });
 }
 
-export function readScenario(data) {
-    const id = randomItem(data.orderIds);
-    if (id) {
-        const res = http.get(`http://localhost:8080/orders/${id}/total-price`);
-        check(res, { 'got order total': r => r.status === 200 });
-    }
+export function readScenario() {
+    const res = http.get('http://hl1.zil:8081/orders/total-prices');
+    check(res, { 'got total prices': r => r.status === 200 });
 }
