@@ -31,11 +31,22 @@ function generateProductPayload() {
 export function writeScenario() {
     const payload = generateProductPayload();
     const headers = { 'Content-Type': 'application/json' };
-    const res = http.post('http://hl1.zil:8080/products', payload, { headers });
+
+    const timeout = '360s';
+    const res = http.post('http://hl1.zil:8080/products', payload, {
+        headers,
+        timeout: timeout,
+    });
+
     check(res, { 'created product': r => r.status === 200 || r.status === 201 });
 }
 
 export function readScenario() {
-    const res = http.get('http://hl1.zil:8081/orders/total-prices');
+    const timeout = '360s';
+
+    const res = http.get('http://hl1.zil:8081/orders/total-prices', {
+        timeout: timeout,
+    });
+
     check(res, { 'got total prices': r => r.status === 200 });
 }
