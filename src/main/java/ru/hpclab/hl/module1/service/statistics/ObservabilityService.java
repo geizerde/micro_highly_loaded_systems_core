@@ -6,6 +6,8 @@ import ru.hpclab.hl.module1.model.statistics.Timing;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
@@ -57,6 +59,9 @@ public class ObservabilityService {
 
         Instant now = Instant.now();
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                .withZone(ZoneId.systemDefault());
+
         int maxInterval = intervals.stream().max(Integer::compare).get();
 
         removeOldTimings(now, maxInterval);
@@ -79,7 +84,9 @@ public class ObservabilityService {
                             .mapToLong(t -> Duration.between(t.getStart(), t.getStop()).toMillis())
                             .average().getAsDouble();
 
-                    System.out.println(interval + " : " + name + " - " + averageDuration / 1000 + " s.");
+                    String timestamp = "[" + formatter.format(now) + "]";
+
+                    System.out.println(timestamp + " - " + interval + " : " + name + " - " + averageDuration / 1000 + " s.");
                 }
             }
         }
