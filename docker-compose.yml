@@ -52,7 +52,7 @@ services:
       TOTAL_COST_OF_ORDER_SERVICE_PORT: ${TOTAL_COST_OF_ORDER_SERVICE_PORT:-8081}
 
   shop-total-cost-of-order-service:
-    image: geizerde/shop-total-cost-of-order:v1.2.0
+    image: geizerde/shop-total-cost-of-order:v1.3.0
     container_name: shop-total-cost-app
     restart: always
     depends_on:
