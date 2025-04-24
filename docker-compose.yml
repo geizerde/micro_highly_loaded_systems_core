@@ -72,6 +72,7 @@ services:
       APP_PORT: ${SHOP_TOTAL_COST_PORT:-8081}
       CORE_SERVICE_HOST: ${CORE_SERVICE_HOST:-shop-core-service}
       CORE_SERVICE_PORT: ${CORE_SERVICE_PORT:-8080}
+      CORE_SERVICE_TIMEOUT: ${CORE_SERVICE_TIMEOUT:-60000}
 
   pgadmin:
     image: dpage/pgadmin4:latest
