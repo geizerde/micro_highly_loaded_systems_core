@@ -1,13 +1,17 @@
 import { check } from 'k6';
+import http from 'k6/http';
 import { randomString } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
-import kafka from 'k6/x/kafka';
-
-const producer = new kafka.Producer({
-    brokers: [__ENV.KAFKA_BROKER || 'hl22.zil:9094'],
-    clientId: 'k6-producer',
-});
+import { Writer, SCHEMA_TYPE_STRING, SchemaRegistry } from 'k6/x/kafka';
 
 const topic = __ENV.KAFKA_TOPIC || 'var01';
+const brokers = [__ENV.KAFKA_BROKER || 'hl22.zil:9094'];
+
+const writer = new Writer({
+    brokers: brokers,
+    topic: topic,
+});
+
+const schemaRegistry = new SchemaRegistry(); // используем сериализацию строк
 
 export const options = {
     scenarios: {
@@ -28,30 +32,39 @@ export const options = {
 
 function generateProductPayload() {
     return JSON.stringify({
-        name: randomString(8),
-        category: randomString(5),
-        manufacturer: randomString(10),
-        price: (Math.random() * (500 - 10) + 10).toFixed(2),
+        entity: 'PRODUCT',
+        operation: 'POST',
+        payload: {
+            name: randomString(8),
+            category: randomString(5),
+            manufacturer: randomString(10),
+            price: +(Math.random() * (500 - 10) + 10).toFixed(2),
+        },
     });
 }
 
 export function writeScenario() {
-    const message = generateProductPayload();
-    try {
-        producer.produce({
-            topic: topic,
-            messages: [{ value: message }],
-        });
-    } catch (err) {
-        console.error(`Kafka send error: ${err}`);
-    }
+    const msg = generateProductPayload();
+
+    writer.produce({
+        messages: [
+            {
+                key: schemaRegistry.serialize({
+                    data: randomString(4),
+                    schemaType: SCHEMA_TYPE_STRING,
+                }),
+                value: schemaRegistry.serialize({
+                    data: msg,
+                    schemaType: SCHEMA_TYPE_STRING,
+                }),
+            },
+        ],
+    });
 }
 
 export function readScenario() {
-    const timeout = '360s';
-
     const res = http.get('http://hl1.zil:8081/orders/total-prices', {
-        timeout: timeout,
+        timeout: '360s',
     });
 
     check(res, { 'got total prices': r => r.status === 200 });
