@@ -1,6 +1,13 @@
-import http from 'k6/http';
 import { check } from 'k6';
 import { randomString } from 'https://jslib.k6.io/k6-utils/1.4.0/index.js';
+import kafka from 'k6/x/kafka';
+
+const producer = new kafka.Producer({
+    brokers: [__ENV.KAFKA_BROKER || 'hl22.zil:9094'],
+    clientId: 'k6-producer',
+});
+
+const topic = __ENV.KAFKA_TOPIC || 'var01';
 
 export const options = {
     scenarios: {
@@ -29,16 +36,15 @@ function generateProductPayload() {
 }
 
 export function writeScenario() {
-    const payload = generateProductPayload();
-    const headers = { 'Content-Type': 'application/json' };
-
-    const timeout = '360s';
-    const res = http.post('http://hl1.zil:8080/products', payload, {
-        headers,
-        timeout: timeout,
-    });
-
-    check(res, { 'created product': r => r.status === 200 || r.status === 201 });
+    const message = generateProductPayload();
+    try {
+        producer.produce({
+            topic: topic,
+            messages: [{ value: message }],
+        });
+    } catch (err) {
+        console.error(`Kafka send error: ${err}`);
+    }
 }
 
 export function readScenario() {

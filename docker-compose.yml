@@ -50,6 +50,10 @@ services:
       APP_PORT: ${SHOP_CORE_PORT:-8080}
       TOTAL_COST_OF_ORDER_SERVICE_HOST: ${TOTAL_COST_OF_ORDER_SERVICE_HOST:-shop-total-cost-of-order-service}
       TOTAL_COST_OF_ORDER_SERVICE_PORT: ${TOTAL_COST_OF_ORDER_SERVICE_PORT:-8081}
+      KAFKA_HOSTS: ${KAFKA_HOSTS:-hl22.zil:9094,hl23.zil:9094}
+      KAFKA_GROUP_ID: ${KAFKA_GROUP_ID:-abeschastnov-consumer-group}
+      KAFKA_TOPIC: ${KAFKA_TOPIC:-var01}
+      KAFKA_CONCURRENCY: ${KAFKA_CONCURRENCY:-2}
 
   shop-total-cost-of-order-service:
     image: geizerde/shop-total-cost-of-order:v1.3.0
