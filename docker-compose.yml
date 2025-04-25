@@ -19,7 +19,7 @@ services:
       start_period: 10s
 
   shop-core-service:
-    image: geizerde/shop-core:v1.1.0
+    image: geizerde/shop-core:v1.2.0
     container_name: shop-core-app
     restart: always
     depends_on:
