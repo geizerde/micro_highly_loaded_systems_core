@@ -35,3 +35,10 @@ spec:
                 secretKeyRef:
                   name: db-credentials
                   key: password
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1024Mi"
+            requests:
+              cpu: "1"
+              memory: "1024Mi"

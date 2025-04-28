@@ -22,3 +22,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: shop-config
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1024Mi"
+            requests:
+              cpu: "1"
+              memory: "1024Mi"
