@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-total-cost-of-order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-total-cost-of-order-service
+  template:
+    metadata:
+      labels:
+        app: shop-total-cost-of-order-service
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: shop-total-cost-of-order-service
+          image: geizerde/shop-total-cost-of-order:v1.3.0
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: shop-config

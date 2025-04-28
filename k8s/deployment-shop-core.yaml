@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-core-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shop-core-service
+  template:
+    metadata:
+      labels:
+        app: shop-core-service
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: shop-core-service
+          image: geizerde/shop-core:v1.2.0
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: shop-config
+            - secretRef:
+                name: db-credentials
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
