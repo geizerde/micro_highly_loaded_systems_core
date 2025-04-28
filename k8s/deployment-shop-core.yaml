@@ -17,6 +17,7 @@ spec:
       containers:
         - name: shop-core-service
           image: geizerde/shop-core:v1.2.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           envFrom:

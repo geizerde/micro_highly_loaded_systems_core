@@ -17,6 +17,7 @@ spec:
       containers:
         - name: shop-total-cost-of-order-service
           image: geizerde/shop-total-cost-of-order:v1.3.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 8081
           envFrom:
