@@ -16,7 +16,7 @@ spec:
         - name: regcred
       containers:
         - name: shop-total-cost-of-order-service
-          image: geizerde/shop-total-cost-of-order:v1.3.0
+          image: geizerde/shop-total-cost-of-order:v1.4.0-retry
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
@@ -29,7 +29,7 @@ spec:
               port: 8081
             periodSeconds: 10
             timeoutSeconds: 3
-            failureThreshold: 2
+            failureThreshold: 3
 
           readinessProbe:
             httpGet:
@@ -37,7 +37,7 @@ spec:
               port: 8081
             periodSeconds: 10
             timeoutSeconds: 3
-            failureThreshold: 2
+            failureThreshold: 3
           resources:
             limits:
               cpu: "1"
