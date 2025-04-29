@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: shop-core-killer
+spec:
+  schedule: "*/10 * * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: killer
+              image: bitnami/kubectl:latest
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "Killing pods with label app=shop-core-service"
+                  curl -X POST http://shop-core-service.default.svc.cluster.local:8080/internal/crash

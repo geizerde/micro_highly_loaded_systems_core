@@ -36,6 +36,21 @@ spec:
                 secretKeyRef:
                   name: db-credentials
                   key: password
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 15
+            failureThreshold: 2
+
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 2
           resources:
             limits:
               cpu: "1"
