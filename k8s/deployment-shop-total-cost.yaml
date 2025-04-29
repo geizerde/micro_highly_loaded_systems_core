@@ -23,18 +23,24 @@ spec:
         - name: regcred
       containers:
         - name: shop-total-cost-of-order-service
-          image: geizerde/shop-total-cost-of-order:v1.4.0-retry
+          image: geizerde/shop-total-cost-of-order:v1.5.0-redis
           imagePullPolicy: Always
           ports:
             - containerPort: 8081
           envFrom:
             - configMapRef:
                 name: shop-config
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: redis-password
           livenessProbe:
             httpGet:
               path: /healthcheck
               port: 8081
-            periodSeconds: 10
+            periodSeconds: 30
             timeoutSeconds: 3
             failureThreshold: 2
 
@@ -42,7 +48,7 @@ spec:
             httpGet:
               path: /healthcheck
               port: 8081
-            periodSeconds: 10
+            periodSeconds: 30
             timeoutSeconds: 3
             failureThreshold: 2
           resources:

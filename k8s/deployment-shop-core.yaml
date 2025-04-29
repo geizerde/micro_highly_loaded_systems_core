@@ -47,16 +47,16 @@ spec:
             httpGet:
               path: /healthcheck
               port: 8080
-            periodSeconds: 10
-            timeoutSeconds: 3
+            periodSeconds: 30
+            timeoutSeconds: 10
             failureThreshold: 2
 
           readinessProbe:
             httpGet:
               path: /healthcheck
               port: 8080
-            periodSeconds: 10
-            timeoutSeconds: 3
+            periodSeconds: 30
+            timeoutSeconds: 10
             failureThreshold: 2
           resources:
             limits:
