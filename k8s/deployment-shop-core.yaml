@@ -16,7 +16,7 @@ spec:
         - name: regcred
       containers:
         - name: shop-core-service
-          image: geizerde/shop-core:v1.3.0
+          image: geizerde/shop-core:v1.4.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
